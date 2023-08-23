@@ -79,6 +79,11 @@ namespace Rml::SolLua
 				return my_pos == other_pos;
 			}
 
+			auto operator!=(const Iter& other) const
+			{
+				return !(*this == other);
+			}
+
 			auto operator*() const
 			{
 				return m_owner->m_func_get(m_pos);

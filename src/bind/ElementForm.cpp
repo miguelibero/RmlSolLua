@@ -20,7 +20,7 @@ namespace Rml::SolLua
 		template <class TSelf, typename T>
 		T getAttributeWithDefault(TSelf& self, const std::string& name, T def)
 		{
-			auto attr = self.GetAttribute<T>(name, def);
+			auto attr = self.template GetAttribute<T>(name, def);
 			return attr;
 		}
 		#define GETATTRGETTER(S, N, D) [](S& self) { return functions::getAttributeWithDefault(self, N, D); }
