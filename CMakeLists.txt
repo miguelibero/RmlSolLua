@@ -12,6 +12,12 @@ find_package (RmlUi REQUIRED)
 # Add source to this project's executable.
 add_library (RmlSolLua STATIC)
 
+target_compile_definitions (RmlSolLua
+	PRIVATE
+		RmlUi_VERSION_MAJOR=${RmlUi_VERSION_MAJOR}
+		RmlUi_VERSION_MINOR=${RmlUi_VERSION_MINOR}
+)
+
 target_sources (RmlSolLua
 	PRIVATE
 		"include/RmlSolLua/RmlSolLua.h"

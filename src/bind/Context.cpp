@@ -154,7 +154,14 @@ namespace Rml::SolLua
 		usertype["ProcessMouseMove"] = &Rml::Context::ProcessMouseMove;
 		usertype["ProcessMouseButtonDown"] = &Rml::Context::ProcessMouseButtonDown;
 		usertype["ProcessMouseButtonUp"] = &Rml::Context::ProcessMouseButtonUp;
+#if RmlUi_VERSION_MAJOR >= 5 && RmlUi_VERSION_MINOR >= 1
+		usertype["ProcessMouseWheel"] = sol::overload(
+			static_cast<bool(Rml::Context::*)(float, int)>(&Rml::Context::ProcessMouseWheel),
+			static_cast<bool(Rml::Context::*)(Vector2f, int)>(&Rml::Context::ProcessMouseWheel)
+		);
+#else
 		usertype["ProcessMouseWheel"] = &Rml::Context::ProcessMouseWheel;
+#endif
 		usertype["ProcessMouseLeave"] = &Rml::Context::ProcessMouseLeave;
 		usertype["IsMouseInteracting"] = &Rml::Context::IsMouseInteracting;
 		usertype["ProcessKeyDown"] = &Rml::Context::ProcessKeyDown;
