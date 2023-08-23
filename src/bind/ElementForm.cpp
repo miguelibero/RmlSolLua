@@ -10,23 +10,25 @@ namespace Rml::SolLua
 
 	namespace functions
 	{
-		constexpr bool hasAttribute(auto& self, const std::string& name)
+		template <class TSelf>
+		constexpr bool hasAttribute(TSelf& self, const std::string& name)
 		{
 			return self.HasAttribute(name);
 		}
 		#define HASATTRGETTER(S, N) [](S& self) { return self.HasAttribute(N); }
 
-		template <typename T>
-		T getAttributeWithDefault(auto& self, const std::string& name, T def)
+		template <class TSelf, typename T>
+		T getAttributeWithDefault(TSelf& self, const std::string& name, T def)
 		{
 			auto attr = self.GetAttribute<T>(name, def);
 			return attr;
 		}
 		#define GETATTRGETTER(S, N, D) [](S& self) { return functions::getAttributeWithDefault(self, N, D); }
 
-		constexpr void setAttribute(auto& self, const std::string& name, const auto& value)
+		template <class TSelf, class T>
+		constexpr void setAttribute(TSelf& self, const std::string& name, const T& value)
 		{
-			if constexpr (std::is_same_v<std::decay_t<decltype(value)>, bool>)
+			if constexpr (std::is_same_v<std::decay_t<T>, bool>)
 			{
 				if (value)
 					self.SetAttribute(name, true);
