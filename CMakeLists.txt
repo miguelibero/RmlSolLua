@@ -7,10 +7,10 @@ project ("RmlSolLua")
 
 set (CMAKE_CXX_STANDARD 17)
 
+find_package (RmlUi REQUIRED)
+
 # Add source to this project's executable.
 add_library (RmlSolLua STATIC)
-
-find_library (RmlCore HINTS dependencies/RmlUi)
 
 target_sources (RmlSolLua
 	PRIVATE
@@ -51,6 +51,8 @@ target_include_directories (RmlSolLua
 	PUBLIC
 		${PROJECT_SOURCE_DIR}/include
 )
+
+target_link_libraries (RmlSolLua RmlCore)
 
 
 # TODO: Add tests and install targets if needed.
