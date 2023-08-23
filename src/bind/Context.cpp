@@ -137,52 +137,51 @@ namespace Rml::SolLua
 	/// <param name="lua">The Lua state to bind into.</param>
 	void bind_context(sol::state_view& lua)
 	{
-		lua.new_usertype<Rml::Context>("Context", sol::no_constructor,
-			// M
-			"AddEventListener", &Rml::Context::AddEventListener,
-			"CreateDocument", [](Rml::Context& self) { return self.CreateDocument(); },
-			"LoadDocument", [](Rml::Context& self, const Rml::String& document) {
-				auto doc = self.LoadDocument(document);
-				return dynamic_cast<SolLuaDocument*>(doc);
-			},
-			"GetDocument", &document::getDocumentBypassString,
-			"Render", &Rml::Context::Render,
-			"UnloadAllDocuments", &Rml::Context::UnloadAllDocuments,
-			"UnloadDocument", &Rml::Context::UnloadDocument,
-			"Update", &Rml::Context::Update,
-			"OpenDataModel", &datamodel::openDataModel,
-			"ProcessMouseMove", &Rml::Context::ProcessMouseMove,
-			"ProcessMouseButtonDown", &Rml::Context::ProcessMouseButtonDown,
-			"ProcessMouseButtonUp", &Rml::Context::ProcessMouseButtonUp,
-			"ProcessMouseWheel", &Rml::Context::ProcessMouseWheel,
-			"ProcessMouseLeave", &Rml::Context::ProcessMouseLeave,
-			"IsMouseInteracting", &Rml::Context::IsMouseInteracting,
-			"ProcessKeyDown", &Rml::Context::ProcessKeyDown,
-			"ProcessKeyUp", &Rml::Context::ProcessKeyUp,
-			"ProcessTextInput", sol::resolve<bool(const Rml::String&)>(&Rml::Context::ProcessTextInput),
-			//--
-			"EnableMouseCursor", &Rml::Context::EnableMouseCursor,
-			"ActivateTheme", &Rml::Context::ActivateTheme,
-			"IsThemeActive", &Rml::Context::IsThemeActive,
-			"GetElementAtPoint", sol::overload(&element::getElementAtPoint1, &element::getElementAtPoint2),
-			"PullDocumentToFront", &Rml::Context::PullDocumentToFront,
-			"PushDocumentToBack", &Rml::Context::PushDocumentToBack,
-			"UnfocusDocument", &Rml::Context::UnfocusDocument,
-			// RemoveEventListener
+		auto usertype = lua.new_usertype<Rml::Context>("Context", sol::no_constructor);
+		// M
+		usertype["AddEventListener"] = &Rml::Context::AddEventListener;
+		usertype["CreateDocument"] = [](Rml::Context& self) { return self.CreateDocument(); };
+		usertype["LoadDocument"] = [](Rml::Context& self, const Rml::String& document) {
+			auto doc = self.LoadDocument(document);
+			return dynamic_cast<SolLuaDocument*>(doc);
+		};
+		usertype["GetDocument"] = &document::getDocumentBypassString;
+		usertype["Render"] = &Rml::Context::Render;
+		usertype["UnloadAllDocuments"] = &Rml::Context::UnloadAllDocuments;
+		usertype["UnloadDocument"] = &Rml::Context::UnloadDocument;
+		usertype["Update"] = &Rml::Context::Update;
+		usertype["OpenDataModel"] = &datamodel::openDataModel;
+		usertype["ProcessMouseMove"] = &Rml::Context::ProcessMouseMove;
+		usertype["ProcessMouseButtonDown"] = &Rml::Context::ProcessMouseButtonDown;
+		usertype["ProcessMouseButtonUp"] = &Rml::Context::ProcessMouseButtonUp;
+		usertype["ProcessMouseWheel"] = &Rml::Context::ProcessMouseWheel;
+		usertype["ProcessMouseLeave"] = &Rml::Context::ProcessMouseLeave;
+		usertype["IsMouseInteracting"] = &Rml::Context::IsMouseInteracting;
+		usertype["ProcessKeyDown"] = &Rml::Context::ProcessKeyDown;
+		usertype["ProcessKeyUp"] = &Rml::Context::ProcessKeyUp;
+		usertype["ProcessTextInput"] = sol::resolve<bool(const Rml::String&)>(&Rml::Context::ProcessTextInput);
+		//--
+		usertype["EnableMouseCursor"] = &Rml::Context::EnableMouseCursor;
+		usertype["ActivateTheme"] = &Rml::Context::ActivateTheme;
+		usertype["IsThemeActive"] = &Rml::Context::IsThemeActive;
+		usertype["GetElementAtPoint"] = sol::overload(&element::getElementAtPoint1, &element::getElementAtPoint2);
+		usertype["PullDocumentToFront"] = &Rml::Context::PullDocumentToFront;
+		usertype["PushDocumentToBack"] = &Rml::Context::PushDocumentToBack;
+		usertype["UnfocusDocument"] = &Rml::Context::UnfocusDocument;
+		// RemoveEventListener
 
-			// G+S
-			"dimensions", sol::property(&Rml::Context::GetDimensions, &Rml::Context::SetDimensions),
-			"dp_ratio", sol::property(&Rml::Context::GetDensityIndependentPixelRatio, &Rml::Context::SetDensityIndependentPixelRatio),
-			//--
-			"clip_region", sol::property(&Rml::Context::GetActiveClipRegion, &Rml::Context::SetActiveClipRegion),
+		// G+S
+		usertype["dimensions"] = sol::property(&Rml::Context::GetDimensions, &Rml::Context::SetDimensions);
+		usertype["dp_ratio"] = sol::property(&Rml::Context::GetDensityIndependentPixelRatio, &Rml::Context::SetDensityIndependentPixelRatio);
+		//--
+		usertype["clip_region"] = sol::property(&Rml::Context::GetActiveClipRegion, &Rml::Context::SetActiveClipRegion);
 
-			// G
-			"documents", sol::readonly_property(&getIndexedTable<SolLuaDocument, Rml::Context, &document::getDocument, &Rml::Context::GetNumDocuments>),
-			"focus_element", sol::readonly_property(&Rml::Context::GetFocusElement),
-			"hover_element", sol::readonly_property(&Rml::Context::GetHoverElement),
-			"name", sol::readonly_property(&Rml::Context::GetName),
-			"root_element", sol::readonly_property(&Rml::Context::GetRootElement)
-		);
+		// G
+		usertype["documents"] = sol::readonly_property(&getIndexedTable<SolLuaDocument, Rml::Context, &document::getDocument, &Rml::Context::GetNumDocuments>);
+		usertype["focus_element"] = sol::readonly_property(&Rml::Context::GetFocusElement);
+		usertype["hover_element"] = sol::readonly_property(&Rml::Context::GetHoverElement);
+		usertype["name"] = sol::readonly_property(&Rml::Context::GetName);
+		usertype["root_element"] = sol::readonly_property(&Rml::Context::GetRootElement);
 	}
 
 } // end namespace Rml::SolLua
