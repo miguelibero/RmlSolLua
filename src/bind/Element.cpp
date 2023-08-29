@@ -160,84 +160,82 @@ namespace Rml::SolLua
 			sol::meta_function::pairs, &style::StyleProxy::Pairs
 		);
 
-		lua.new_usertype<Rml::Element>("Element", sol::no_constructor,
-			// M
-			"AddEventListener", sol::overload(
-				[](Rml::Element& s, const Rml::String& e, sol::protected_function f) { functions::addEventListener(s, e, f, false); },
-				sol::resolve<void(Rml::Element&, const Rml::String&, sol::protected_function, bool)>(&functions::addEventListener),
-				sol::resolve<void(Rml::Element&, const Rml::String&, const Rml::String&, sol::this_state)>(&functions::addEventListener),
-				sol::resolve<void(Rml::Element&, const Rml::String&, const Rml::String&, sol::this_state, bool)>(&functions::addEventListener)
-			),
-			"AppendChild", [](Rml::Element& self, Rml::ElementPtr& e) { self.AppendChild(std::move(e)); },
-			"Blur", &Rml::Element::Blur,
-			"Click", &Rml::Element::Click,
-			"DispatchEvent", sol::resolve<bool(const Rml::String&, const Rml::Dictionary&)>(&Rml::Element::DispatchEvent),
-			"Focus", &Rml::Element::Focus,
-			"GetAttribute", &functions::getAttribute,
-			"GetElementById", &Rml::Element::GetElementById,
-			"GetElementsByTagName", &functions::getElementsByTagName,
-			"QuerySelector", &Rml::Element::QuerySelector,
-			"QuerySelectorAll", &functions::getQuerySelectorAll,
-			"HasAttribute", &Rml::Element::HasAttribute,
-			"HasChildNodes", &Rml::Element::HasChildNodes,
-			"InsertBefore", [](Rml::Element& self, Rml::ElementPtr& element, Rml::Element* adjacent_element) { self.InsertBefore(std::move(element), adjacent_element); },
-			"IsClassSet", &Rml::Element::IsClassSet,
-			"RemoveAttribute", &Rml::Element::RemoveAttribute,
-			"RemoveChild", &Rml::Element::RemoveChild,
-			"ReplaceChild", [](Rml::Element& self, Rml::ElementPtr& inserted_element, Rml::Element* replaced_element) { self.ReplaceChild(std::move(inserted_element), replaced_element); },
-			"ScrollIntoView", [](Rml::Element& self, sol::variadic_args va) { if (va.size() == 0) self.ScrollIntoView(true); else self.ScrollIntoView(va[0].as<bool>()); },
-			"SetAttribute", static_cast<void(Rml::Element::*)(const Rml::String&, const Rml::String&)>(&Rml::Element::SetAttribute),
-			"SetClass", &Rml::Element::SetClass,
-			//--
-			"GetElementsByClassName", &functions::getElementsByClassName,
-			"Clone", &Rml::Element::Clone,
-			"Closest", &Rml::Element::Closest,
-			"SetPseudoClass", &Rml::Element::SetPseudoClass,
-			"IsPseudoClassSet", &Rml::Element::IsPseudoClassSet,
-			"ArePseudoClassesSet", &Rml::Element::ArePseudoClassesSet,
-			"GetActivePseudoClasses", &Rml::Element::GetActivePseudoClasses,
-			"IsPointWithinElement", &Rml::Element::IsPointWithinElement,
-			"ProcessDefaultAction", &Rml::Element::ProcessDefaultAction,
-
-			// G+S
-			"class_name", sol::property(&Rml::Element::GetClassNames, &Rml::Element::SetClassNames),
-			"id", sol::property(&Rml::Element::GetId, &Rml::Element::SetId),
-			"inner_rml", sol::property(sol::resolve<Rml::String() const>(&Rml::Element::GetInnerRML), &Rml::Element::SetInnerRML),
-			"scroll_left", sol::property(&Rml::Element::GetScrollLeft, &Rml::Element::SetScrollLeft),
-			"scroll_top", sol::property(&Rml::Element::GetScrollTop, &Rml::Element::SetScrollTop),
-
-			// G
-			"attributes", sol::readonly_property(&functions::getAttributes),
-			"child_nodes", sol::readonly_property(&getIndexedTable<Rml::Element, Rml::Element, &Rml::Element::GetChild, &child::getMaxChildren>),
-			"client_left", sol::readonly_property(&Rml::Element::GetClientLeft),
-			"client_height", sol::readonly_property(&Rml::Element::GetClientHeight),
-			"client_top", sol::readonly_property(&Rml::Element::GetClientTop),
-			"client_width", sol::readonly_property(&Rml::Element::GetClientWidth),
-			"first_child", sol::readonly_property(&Rml::Element::GetFirstChild),
-			"last_child", sol::readonly_property(&Rml::Element::GetLastChild),
-			"next_sibling", sol::readonly_property(&Rml::Element::GetNextSibling),
-			"offset_height", sol::readonly_property(&Rml::Element::GetOffsetHeight),
-			"offset_left", sol::readonly_property(&Rml::Element::GetOffsetLeft),
-			"offset_parent", sol::readonly_property(&Rml::Element::GetOffsetParent),
-			"offset_top", sol::readonly_property(&Rml::Element::GetOffsetTop),
-			"offset_width", sol::readonly_property(&Rml::Element::GetOffsetWidth),
-			"owner_document", sol::readonly_property(&functions::getOwnerDocument),
-			"parent_node", sol::readonly_property(&Rml::Element::GetParentNode),
-			"previous_sibling", sol::readonly_property(&Rml::Element::GetPreviousSibling),
-			"scroll_height", sol::readonly_property(&Rml::Element::GetScrollHeight),
-			"scroll_width", sol::readonly_property(&Rml::Element::GetScrollWidth),
-			"style", sol::readonly_property(&style::getElementStyleProxy),
-			"tag_name", sol::readonly_property(&Rml::Element::GetTagName),
-			//--
-			"address", sol::readonly_property([](Rml::Element& self) { return self.GetAddress(); }),
-			"absolute_left", sol::readonly_property(&Rml::Element::GetAbsoluteLeft),
-			"absolute_top", sol::readonly_property(&Rml::Element::GetAbsoluteTop),
-			"baseline", sol::readonly_property(&Rml::Element::GetBaseline),
-			"line_height", sol::readonly_property(&Rml::Element::GetLineHeight),
-			"visible", sol::readonly_property(&Rml::Element::IsVisible),
-			"z_index", sol::readonly_property(&Rml::Element::GetZIndex)
+		auto elementUsertype = lua.new_usertype<Rml::Element>("Element", sol::no_constructor);
+		// M
+		elementUsertype["AddEventListener"] = sol::overload(
+			[](Rml::Element& s, const Rml::String& e, sol::protected_function f) { functions::addEventListener(s, e, f, false); },
+			sol::resolve<void(Rml::Element&, const Rml::String&, sol::protected_function, bool)>(&functions::addEventListener),
+			sol::resolve<void(Rml::Element&, const Rml::String&, const Rml::String&, sol::this_state)>(&functions::addEventListener),
+			sol::resolve<void(Rml::Element&, const Rml::String&, const Rml::String&, sol::this_state, bool)>(&functions::addEventListener)
 		);
+		elementUsertype["AppendChild"] = [](Rml::Element& self, Rml::ElementPtr& e) { self.AppendChild(std::move(e)); };
+		elementUsertype["Blur"] = &Rml::Element::Blur;
+		elementUsertype["Click"] = &Rml::Element::Click;
+		elementUsertype["DispatchEvent"] = sol::resolve<bool(const Rml::String&, const Rml::Dictionary&)>(&Rml::Element::DispatchEvent);
+		elementUsertype["Focus"] = &Rml::Element::Focus;
+		elementUsertype["GetAttribute"] = &functions::getAttribute;
+		elementUsertype["GetElementById"] = &Rml::Element::GetElementById;
+		elementUsertype["GetElementsByTagName"] = &functions::getElementsByTagName;
+		elementUsertype["QuerySelector"] = &Rml::Element::QuerySelector;
+		elementUsertype["QuerySelectorAll"] = &functions::getQuerySelectorAll;
+		elementUsertype["HasAttribute"] = &Rml::Element::HasAttribute;
+		elementUsertype["HasChildNodes"] = &Rml::Element::HasChildNodes;
+		elementUsertype["InsertBefore"] = [](Rml::Element& self, Rml::ElementPtr& element, Rml::Element* adjacent_element) { self.InsertBefore(std::move(element), adjacent_element); };
+		elementUsertype["IsClassSet"] = &Rml::Element::IsClassSet;
+		elementUsertype["RemoveAttribute"] = &Rml::Element::RemoveAttribute;
+		elementUsertype["RemoveChild"] = &Rml::Element::RemoveChild;
+		elementUsertype["ReplaceChild"] = [](Rml::Element& self, Rml::ElementPtr& inserted_element, Rml::Element* replaced_element) { self.ReplaceChild(std::move(inserted_element), replaced_element); };
+		elementUsertype["ScrollIntoView"] = [](Rml::Element& self, sol::variadic_args va) { if (va.size() == 0) self.ScrollIntoView(true); else self.ScrollIntoView(va[0].as<bool>()); };
+		elementUsertype["SetAttribute"] = static_cast<void(Rml::Element::*)(const Rml::String&, const Rml::String&)>(&Rml::Element::SetAttribute);
+		elementUsertype["SetClass"] = &Rml::Element::SetClass;
+		//--
+		elementUsertype["GetElementsByClassName"] = &functions::getElementsByClassName;
+		elementUsertype["Clone"] = &Rml::Element::Clone;
+		elementUsertype["Closest"] = &Rml::Element::Closest;
+		elementUsertype["SetPseudoClass"] = &Rml::Element::SetPseudoClass;
+		elementUsertype["IsPseudoClassSet"] = &Rml::Element::IsPseudoClassSet;
+		elementUsertype["ArePseudoClassesSet"] = &Rml::Element::ArePseudoClassesSet;
+		elementUsertype["GetActivePseudoClasses"] = &Rml::Element::GetActivePseudoClasses;
+		elementUsertype["IsPointWithinElement"] = &Rml::Element::IsPointWithinElement;
+		elementUsertype["ProcessDefaultAction"] = &Rml::Element::ProcessDefaultAction;
 
+		// G+S
+		elementUsertype["class_name"] = sol::property(&Rml::Element::GetClassNames, &Rml::Element::SetClassNames);
+		elementUsertype["id"] = sol::property(&Rml::Element::GetId, &Rml::Element::SetId);
+		elementUsertype["inner_rml"] = sol::property(sol::resolve<Rml::String() const>(&Rml::Element::GetInnerRML), &Rml::Element::SetInnerRML);
+		elementUsertype["scroll_left"] = sol::property(&Rml::Element::GetScrollLeft, &Rml::Element::SetScrollLeft);
+		elementUsertype["scroll_top"] = sol::property(&Rml::Element::GetScrollTop, &Rml::Element::SetScrollTop);
+
+		// G
+		elementUsertype["attributes"] = sol::readonly_property(&functions::getAttributes);
+		elementUsertype["child_nodes"] = sol::readonly_property(&getIndexedTable<Rml::Element, Rml::Element, &Rml::Element::GetChild, &child::getMaxChildren>);
+		elementUsertype["client_left"] = sol::readonly_property(&Rml::Element::GetClientLeft);
+		elementUsertype["client_height"] = sol::readonly_property(&Rml::Element::GetClientHeight);
+		elementUsertype["client_top"] = sol::readonly_property(&Rml::Element::GetClientTop);
+		elementUsertype["client_width"] = sol::readonly_property(&Rml::Element::GetClientWidth);
+		elementUsertype["first_child"] = sol::readonly_property(&Rml::Element::GetFirstChild);
+		elementUsertype["last_child"] = sol::readonly_property(&Rml::Element::GetLastChild);
+		elementUsertype["next_sibling"] = sol::readonly_property(&Rml::Element::GetNextSibling);
+		elementUsertype["offset_height"] = sol::readonly_property(&Rml::Element::GetOffsetHeight);
+		elementUsertype["offset_left"] = sol::readonly_property(&Rml::Element::GetOffsetLeft);
+		elementUsertype["offset_parent"] = sol::readonly_property(&Rml::Element::GetOffsetParent);
+		elementUsertype["offset_top"] = sol::readonly_property(&Rml::Element::GetOffsetTop);
+		elementUsertype["offset_width"] = sol::readonly_property(&Rml::Element::GetOffsetWidth);
+		elementUsertype["owner_document"] = sol::readonly_property(&functions::getOwnerDocument);
+		elementUsertype["parent_node"] = sol::readonly_property(&Rml::Element::GetParentNode);
+		elementUsertype["previous_sibling"] = sol::readonly_property(&Rml::Element::GetPreviousSibling);
+		elementUsertype["scroll_height"] = sol::readonly_property(&Rml::Element::GetScrollHeight);
+		elementUsertype["scroll_width"] = sol::readonly_property(&Rml::Element::GetScrollWidth);
+		elementUsertype["style"] = sol::readonly_property(&style::getElementStyleProxy);
+		elementUsertype["tag_name"] = sol::readonly_property(&Rml::Element::GetTagName);
+		//--
+		elementUsertype["address"] = sol::readonly_property([](Rml::Element& self) { return self.GetAddress(); });
+		elementUsertype["absolute_left"] = sol::readonly_property(&Rml::Element::GetAbsoluteLeft);
+		elementUsertype["absolute_top"] = sol::readonly_property(&Rml::Element::GetAbsoluteTop);
+		elementUsertype["baseline"] = sol::readonly_property(&Rml::Element::GetBaseline);
+		elementUsertype["line_height"] = sol::readonly_property(&Rml::Element::GetLineHeight);
+		elementUsertype["visible"] = sol::readonly_property(&Rml::Element::IsVisible);
+		elementUsertype["z_index"] = sol::readonly_property(&Rml::Element::GetZIndex);
 	}
 
 } // end namespace Rml::SolLua
