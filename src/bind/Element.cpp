@@ -43,14 +43,14 @@ namespace Rml::SolLua
 		{
 			Rml::ElementList result;
 			self.GetElementsByTagName(result, tag);
-			return result;
+			return sol::as_table(result);
 		}
 
 		auto getElementsByClassName(Rml::Element& self, const Rml::String& class_name)
 		{
 			Rml::ElementList result;
 			self.GetElementsByClassName(result, class_name);
-			return result;
+			return sol::as_table(result);
 		}
 
 		auto getAttributes(Rml::Element& self, sol::this_state s)
@@ -78,7 +78,7 @@ namespace Rml::SolLua
 		{
 			Rml::ElementList result;
 			self.QuerySelectorAll(result, selector);
-			return result;
+			return sol::as_table(result);
 		}
 	}
 
