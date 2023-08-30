@@ -23,7 +23,13 @@ namespace Rml::SolLua
 		log.set_function("Message", [](Rml::Log::Type type, const std::string& message) { Log::Message(type, "%s", message.c_str()); });
 
 		// print("Text")
-		lua.set_function("print", [](const std::string& message) { Log::Message(Rml::Log::LT_INFO, "%s", message.c_str()); });
+		lua["print"] = lua.script(R"(return function(...)
+			local parts = table.pack(...)
+			for i = 1, #parts do
+				parts[i] = tostring(parts[i])
+			end
+			Log.Message(Log.logtype.info, table.concat(parts, "\t"))
+		end)");
 	}
 
 } // end namespace Rml::SolLua
