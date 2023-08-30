@@ -44,4 +44,39 @@ namespace Rml::SolLua
 		return sol::make_object(s, sol::nil);
 	}
 
+	Rml::Variant makeVariantFromObject(const sol::object& o)
+	{
+		switch (o.get_type())
+		{
+		case sol::type::string:
+			return Rml::Variant(o.as<std::string>());
+		case sol::type::number:
+			return Rml::Variant(o.as<float>());
+		case sol::type::boolean:
+			return Rml::Variant(o.as<bool>());
+		case sol::type::userdata:
+		{
+			if (auto c = o.as<sol::optional<Rml::Colourb>>(); c)
+				return Rml::Variant(*c);
+			else if (auto c = o.as<sol::optional<Rml::Colourf>>(); c)
+				return Rml::Variant(*c);
+			else if (auto c = o.as<sol::optional<Rml::Colourf>>(); c)
+				return Rml::Variant(*c);
+			else if (auto c = o.as<sol::optional<Rml::Vector2f>>(); c)
+				return Rml::Variant(*c);
+			else if (auto c = o.as<sol::optional<Rml::Vector3f>>(); c)
+				return Rml::Variant(*c);
+			else if (auto c = o.as<sol::optional<Rml::Vector4f>>(); c)
+				return Rml::Variant(*c);
+			else
+				return Rml::Variant();
+		}
+		case sol::type::lightuserdata:
+			return Rml::Variant(o.as<void*>());
+		default:
+			return Rml::Variant();
+		}
+	}
+
+
 } // end namespace Rml::SolLua

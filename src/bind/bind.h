@@ -31,6 +31,7 @@ namespace Rml::SolLua
 {
 
 	sol::object makeObjectFromVariant(const Rml::Variant* variant, sol::state_view s);
+	Rml::Variant makeVariantFromObject(const sol::object& o);
 	using SolObjectMap = std::unordered_map<std::string, sol::object>;
 
 } // end namespace Rml::SolLua

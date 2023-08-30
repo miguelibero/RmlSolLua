@@ -171,7 +171,20 @@ namespace Rml::SolLua
 		elementUsertype["AppendChild"] = [](Rml::Element& self, Rml::ElementPtr& e) { self.AppendChild(std::move(e)); };
 		elementUsertype["Blur"] = &Rml::Element::Blur;
 		elementUsertype["Click"] = &Rml::Element::Click;
-		elementUsertype["DispatchEvent"] = sol::resolve<bool(const Rml::String&, const Rml::Dictionary&)>(&Rml::Element::DispatchEvent);
+		elementUsertype["DispatchEvent"] = sol::overload(
+			sol::resolve<bool(const Rml::String&, const Rml::Dictionary&)>(&Rml::Element::DispatchEvent),
+			[](Rml::Element& s, const Rml::String& event, sol::table parameters)
+			{
+				Rml::Dictionary parameters2;
+				for(auto kv : parameters)
+				{
+					auto key = kv.first.as<sol::optional<std::string>>();
+					if(key)
+						parameters2[*key] = makeVariantFromObject(kv.second);
+				}
+				s.DispatchEvent(event, parameters2);
+			}
+		);
 		elementUsertype["Focus"] = &Rml::Element::Focus;
 		elementUsertype["GetAttribute"] = &functions::getAttribute;
 		elementUsertype["GetElementById"] = &Rml::Element::GetElementById;
