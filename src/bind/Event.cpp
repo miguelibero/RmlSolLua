@@ -15,7 +15,7 @@ namespace Rml::SolLua
 			{
 				if (self.GetId() == Rml::EventId::Tabchange && value.GetType() == Rml::Variant::INT)
 				{
-					auto object = sol::make_object(s, value.Get<int>());
+					auto object = sol::make_object(s, to_lua_index(value.Get<int>()));
 					result.insert(std::make_pair(key, object));
 				}
 				else

@@ -34,6 +34,9 @@ namespace Rml::SolLua
 	Rml::Variant makeVariantFromObject(const sol::object& o);
 	using SolObjectMap = std::unordered_map<std::string, sol::object>;
 
+	inline int from_lua_index(int i) { return i - 1; }
+	inline int to_lua_index(int i) { return i + 1; }
+
 } // end namespace Rml::SolLua
 
 

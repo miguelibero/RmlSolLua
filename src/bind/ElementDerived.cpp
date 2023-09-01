@@ -71,7 +71,16 @@ namespace Rml::SolLua
 			"RemoveTab", &Rml::ElementTabSet::RemoveTab,
 
 			// G+S
-			"active_tab", sol::property(&Rml::ElementTabSet::GetActiveTab, &Rml::ElementTabSet::SetActiveTab),
+			"active_tab", sol::property(
+				[](const Rml::ElementTabSet& self) -> int
+				{
+					return to_lua_index(self.GetActiveTab());
+				},
+				[](Rml::ElementTabSet& self, int i)
+				{
+					self.SetActiveTab(from_lua_index(i));
+				}
+			),
 
 			// G
 			"num_tabs", &Rml::ElementTabSet::GetNumTabs,

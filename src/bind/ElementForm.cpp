@@ -169,7 +169,16 @@ namespace Rml::SolLua
 			"RemoveAll", &Rml::ElementFormControlSelect::RemoveAll,
 
 			// G+S
-			"selection", sol::property(&Rml::ElementFormControlSelect::GetSelection, &Rml::ElementFormControlSelect::SetSelection),
+			"selection", sol::property(
+				[](const Rml::ElementFormControlSelect& self) -> int
+				{
+					return to_lua_index(self.GetSelection());
+				},
+				[](Rml::ElementFormControlSelect& self, int v)
+				{
+					self.SetSelection(from_lua_index(v));
+				}
+			),
 
 			// G
 			"options", &options::getOptionsProxy,
