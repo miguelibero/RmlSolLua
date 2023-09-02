@@ -42,49 +42,6 @@ namespace Rml::SolLua
 		#define SETATTR(S, N, D) [](S& self, const D& value) { functions::setAttribute(self, N, value); }
 	}
 
-	namespace options
-	{
-		struct SelectOptionsProxyNode
-		{
-			Rml::Element* Element;
-			std::string Value;
-		};
-
-		struct SelectOptionsProxy
-		{
-			SelectOptionsProxy(Rml::ElementFormControlSelect& element) : m_element(element) {}
-
-			SelectOptionsProxyNode Get(int index) const
-			{
-				auto element = m_element.GetOption(index);
-				if (!element)
-					return SelectOptionsProxyNode{ nullptr, {} };
-
-				return SelectOptionsProxyNode{ .Element = element, .Value = element->GetAttribute("value", std::string{}) };
-			}
-
-			std::vector<SelectOptionsProxyNode> Pairs() const
-			{
-				std::vector<SelectOptionsProxyNode> result;
-				int i = 0;
-				while (auto element = m_element.GetOption(i++))
-				{
-					result.push_back({ .Element = element, .Value = element->GetAttribute("value", std::string{}) });
-				}
-
-				return result;
-			}
-
-		private:
-			Rml::ElementFormControlSelect& m_element;
-		};
-
-		auto getOptionsProxy(Rml::ElementFormControlSelect& self)
-		{
-			return SelectOptionsProxy{ self };
-		}
-	}
-
 	namespace submit
 	{
 		void submit(Rml::ElementForm& self)
@@ -147,25 +104,26 @@ namespace Rml::SolLua
 
 		///////////////////////////
 
-		lua.new_usertype<options::SelectOptionsProxy>("SelectOptionsProxy", sol::no_constructor,
-			sol::meta_function::index, &options::SelectOptionsProxy::Get,
-			sol::meta_function::pairs, &options::SelectOptionsProxy::Pairs,
-			sol::meta_function::ipairs, &options::SelectOptionsProxy::Pairs
-		);
-
-		lua.new_usertype<options::SelectOptionsProxyNode>("SelectOptionsProxyNode", sol::no_constructor,
-			"element", &options::SelectOptionsProxyNode::Element,
-			"value", &options::SelectOptionsProxyNode::Value
-		);
-
 		lua.new_usertype<Rml::ElementFormControlSelect>("ElementFormControlSelect", sol::no_constructor,
 			// M
-			"Add", [](Rml::ElementFormControlSelect& self, Rml::ElementPtr& element, sol::variadic_args va) {
-				int before = (va.size() > 0 ? va.get<int>() : -1);
-				self.Add(std::move(element), before);
-				return 1;
+			"Add", sol::overload(
+				[](Rml::ElementFormControlSelect& self, Rml::ElementPtr& element, sol::optional<int> before)
+				{
+					return self.Add(std::move(element), from_lua_index(before.value_or(0)));
+				},
+				[](
+					Rml::ElementFormControlSelect& self,
+					const Rml::String& rml,
+					const Rml::String& value,
+					std::optional<int> before)
+				{
+					return self.Add(rml, value, from_lua_index(before.value_or(0)));
+				}
+			),
+			"Remove", [](Rml::ElementFormControlSelect& self, int index)
+			{
+				self.Remove(from_lua_index(index));
 			},
-			"Remove", &Rml::ElementFormControlSelect::Remove,
 			"RemoveAll", &Rml::ElementFormControlSelect::RemoveAll,
 
 			// G+S
@@ -181,7 +139,20 @@ namespace Rml::SolLua
 			),
 
 			// G
-			"options", &options::getOptionsProxy,
+			"options", sol::property([](Rml::ElementFormControlSelect& self, sol::this_state state) -> sol::table
+			{
+				sol::state_view lua(state);
+				auto result = lua.create_table();
+				int i = 0;
+				while (auto element = self.GetOption(i++))
+				{
+					auto luaElement = lua.create_table();
+					luaElement["element"] = element;
+					luaElement["value"] = element->GetAttribute("value", std::string{});
+					result.add(luaElement);
+				}
+				return result;
+			}),
 
 			// B
 			sol::base_classes, sol::bases<Rml::ElementFormControl, Rml::Element>()
