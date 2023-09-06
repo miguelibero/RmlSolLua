@@ -3,6 +3,7 @@
 #include <RmlUi/Core/Stream.h>
 #include <RmlUi/Core/Log.h>
 #include <RmlUi/Core/Context.h>
+#include <RmlUi/Core/FileInterface.h>
 
 
 namespace Rml::SolLua
@@ -50,7 +51,28 @@ namespace Rml::SolLua
 		if (!m_lua_env_identifier.empty())
 			m_environment[m_lua_env_identifier] = GetId();
 
-		m_state.safe_script_file(source_path, m_environment, ErrorHandler);
+		// use the file interface to get the contents of the script
+		FileInterface* file_interface = GetFileInterface();
+		FileHandle handle = file_interface->Open(source_path);
+		if (handle == 0)
+		{
+			Log::Message(Log::LT_WARNING, "LoadFile: Unable to open file: %s", source_path.c_str());
+			return;
+		}
+
+		size_t size = file_interface->Length(handle);
+		if (size == 0)
+		{
+			Log::Message(Log::LT_WARNING, "LoadFile: File is 0 bytes in size: %s", source_path.c_str());
+			return;
+		}
+		UniquePtr<char[]> file_contents(new char[size]);
+		file_interface->Read(file_contents.get(), size, handle);
+		file_interface->Close(handle);
+
+		Rml::String chunkname = "@" + source_path;
+		std::string_view source(file_contents.get(), size);
+		m_state.safe_script(source, m_environment, ErrorHandler, chunkname);
 	}
 
 	sol::protected_function_result SolLuaDocument::RunLuaScript(const Rml::String& script)
