@@ -86,7 +86,7 @@ namespace Rml::SolLua
 	{
 		auto getMaxChildren(Rml::Element& self)
 		{
-			std::function<int()> result = std::bind(&Rml::Element::GetNumChildren, &self, false);
+			std::function<int()> result = std::bind(&Rml::Element::GetNumChildren, &self, true);
 			return result;
 		}
 	}
