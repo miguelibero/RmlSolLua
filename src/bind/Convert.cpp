@@ -9,16 +9,10 @@ namespace Rml::SolLua
 	namespace functions
 	{
 		template <typename T>
-		T* convert(Rml::Element* element)
+		T* convert(Rml::Element& element)
 		{
-			auto test = dynamic_cast<T*>(element);
-			if (test == nullptr)
-				return nullptr;
-
-			return test;
+			return rmlui_dynamic_cast<T*>(&element);
 		}
-
-		#define CONVERSION(T) static_cast<T*(*)(Rml::Element*)>(&functions::convert)
 	}
 
 	void bind_convert(sol::state_view& lua)
@@ -26,18 +20,18 @@ namespace Rml::SolLua
 		auto element = lua.create_named_table("Element");
 		auto element_as = element.create_named("As");
 
-		element_as["Document"] = CONVERSION(SolLuaDocument);
-		element_as["ElementText"] = CONVERSION(Rml::ElementText);
-		element_as["ElementDataGrid"] = CONVERSION(Rml::ElementDataGrid);
-		element_as["ElementDataGridRow"] = CONVERSION(Rml::ElementDataGridRow);
-		element_as["ElementDataGridCell"] = CONVERSION(Rml::ElementDataGridCell);
-		element_as["ElementForm"] = CONVERSION(Rml::ElementForm);
-		element_as["ElementFormControl"] = CONVERSION(Rml::ElementFormControl);
-		element_as["ElementFormControlInput"] = CONVERSION(Rml::ElementFormControlInput);
-		element_as["ElementFormControlSelect"] = CONVERSION(Rml::ElementFormControlSelect);
-		element_as["ElementFormControlDataSelect"] = CONVERSION(Rml::ElementFormControlDataSelect);
-		element_as["ElementFormControlTextArea"] = CONVERSION(Rml::ElementFormControlTextArea);
-		element_as["ElementTabSet"] = CONVERSION(Rml::ElementTabSet);
+		element_as["Document"] = &functions::convert<SolLuaDocument>;
+		element_as["ElementText"] = &functions::convert<Rml::ElementText>;
+		element_as["ElementDataGrid"] = &functions::convert<Rml::ElementDataGrid>;
+		element_as["ElementDataGridRow"] = &functions::convert<Rml::ElementDataGridRow>;
+		element_as["ElementDataGridCell"] = &functions::convert<Rml::ElementDataGridCell>;
+		element_as["ElementForm"] = &functions::convert<Rml::ElementForm>;
+		element_as["ElementFormControl"] = &functions::convert<Rml::ElementFormControl>;
+		element_as["ElementFormControlInput"] = &functions::convert<Rml::ElementFormControlInput>;
+		element_as["ElementFormControlSelect"] = &functions::convert<Rml::ElementFormControlSelect>;
+		element_as["ElementFormControlDataSelect"] = &functions::convert<Rml::ElementFormControlDataSelect>;
+		element_as["ElementFormControlTextArea"] = &functions::convert<Rml::ElementFormControlTextArea>;
+		element_as["ElementTabSet"] = &functions::convert<Rml::ElementTabSet>;
 	}
 
 } // end namespace Rml::SolLua

@@ -17,7 +17,7 @@ namespace Rml::SolLua
 		auto getDocumentBypass(Rml::Context& self, int idx)
 		{
 			auto document = self.GetDocument(idx);
-			auto result = dynamic_cast<SolLuaDocument*>(document);
+			auto result = rmlui_dynamic_cast<SolLuaDocument*>(document);
 			return result;
 		}
 
@@ -27,7 +27,7 @@ namespace Rml::SolLua
 		auto getDocumentBypassString(Rml::Context& self, const Rml::String& name)
 		{
 			auto document = self.GetDocument(name);
-			return dynamic_cast<SolLuaDocument*>(document);
+			return rmlui_dynamic_cast<SolLuaDocument*>(document);
 		}
 
 		/// <summary>
@@ -143,7 +143,7 @@ namespace Rml::SolLua
 		usertype["CreateDocument"] = [](Rml::Context& self) { return self.CreateDocument(); };
 		usertype["LoadDocument"] = [](Rml::Context& self, const Rml::String& document) {
 			auto doc = self.LoadDocument(document);
-			return dynamic_cast<SolLuaDocument*>(doc);
+			return rmlui_dynamic_cast<SolLuaDocument*>(doc);
 		};
 		usertype["GetDocument"] = &document::getDocumentBypassString;
 		usertype["Render"] = &Rml::Context::Render;
