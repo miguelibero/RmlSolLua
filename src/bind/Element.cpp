@@ -161,6 +161,7 @@ namespace Rml::SolLua
 		);
 
 		auto elementUsertype = lua.new_usertype<Rml::Element>("Element", sol::no_constructor);
+		elementUsertype[sol::meta_function::to_string] = pointer_to_string<Rml::Element>("sol.Element");
 		// M
 		elementUsertype["AddEventListener"] = sol::overload(
 			[](Rml::Element& s, const Rml::String& e, sol::protected_function f) { functions::addEventListener(s, e, f, false); },

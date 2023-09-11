@@ -80,7 +80,8 @@ namespace Rml::SolLua
 			}
 		);
 
-		lua.new_usertype<SolLuaDocument>("Document", sol::no_constructor,
+		auto usertype = lua.new_usertype<SolLuaDocument>("Document", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<SolLuaDocument>("sol.Document"),
 			// M
 			"PullToFront", &SolLuaDocument::PullToFront,
 			"PushToBack", &SolLuaDocument::PushToBack,

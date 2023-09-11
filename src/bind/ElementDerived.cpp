@@ -12,6 +12,7 @@ namespace Rml::SolLua
 	{
 
 		lua.new_usertype<Rml::ElementText>("ElementText", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<Rml::ElementText>("sol.ElementText"),
 			// G
 			"text", sol::property(&Rml::ElementText::GetText, &Rml::ElementText::SetText),
 
@@ -22,6 +23,7 @@ namespace Rml::SolLua
 		///////////////////////////
 
 		lua.new_usertype<Rml::ElementDataGrid>("ElementDataGrid", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<Rml::ElementDataGrid>("sol.ElementDataGrid"),
 			// M
 			"AddColumn", sol::resolve<bool(const Rml::String&, const Rml::String&, float, const Rml::String&)>(&Rml::ElementDataGrid::AddColumn),
 			"SetDataSource", &Rml::ElementDataGrid::SetDataSource,
@@ -34,6 +36,7 @@ namespace Rml::SolLua
 		);
 
 		lua.new_usertype<Rml::ElementDataGridRow>("ElementDataGridRow", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<Rml::ElementDataGridRow>("sol.ElementDataGridRow"),
 			// M
 			//--
 			"RefreshRows", &Rml::ElementDataGridRow::RefreshRows,
@@ -53,6 +56,7 @@ namespace Rml::SolLua
 
 		//--
 		lua.new_usertype<Rml::ElementDataGridCell>("ElementDataGridCell", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<Rml::ElementDataGridCell>("sol.ElementDataGridCell"),
 			// G
 			//--
 			"column", sol::readonly_property(&Rml::ElementDataGridCell::GetColumn),
@@ -64,6 +68,7 @@ namespace Rml::SolLua
 		///////////////////////////
 
 		lua.new_usertype<Rml::ElementTabSet>("ElementTabSet", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<Rml::ElementTabSet>("sol.ElementTabSet"),
 			// M
 			"SetPanel", sol::resolve<void(int, const Rml::String&)>(&Rml::ElementTabSet::SetPanel),
 			"SetTab", sol::resolve<void(int, const Rml::String&)>(&Rml::ElementTabSet::SetTab),
@@ -93,6 +98,7 @@ namespace Rml::SolLua
 
 		//--
 		lua.new_usertype<Rml::ElementProgress>("ElementProgress", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<Rml::ElementProgress>("sol.ElementProgress"),
 			// G+S
 			//--
 			"value", sol::property(&Rml::ElementProgress::GetValue, &Rml::ElementProgress::SetValue),

@@ -25,7 +25,8 @@ namespace Rml::SolLua
 
 		lua.new_usertype<SolLuaDataModel>("SolLuaDataModel", sol::no_constructor,
 			sol::meta_function::index, &functions::dataModelGet,
-			sol::meta_function::new_index, &functions::dataModelSet
+			sol::meta_function::new_index, &functions::dataModelSet,
+			sol::meta_function::to_string, pointer_to_string<SolLuaDataModel>("sol.DataModel")
 		);
 
 	}

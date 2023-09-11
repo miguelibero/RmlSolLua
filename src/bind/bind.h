@@ -3,6 +3,8 @@
 #include <RmlUi/Core.h>
 #include <sol/sol.hpp>
 
+#include <string>
+#include <sstream>
 #include <type_traits>
 
 
@@ -183,6 +185,17 @@ namespace Rml::SolLua
 
 		TableIndexedIterator<T> result{ get, max };
 		return sol::as_table(result);
+	}
+
+	template <typename T>
+	auto pointer_to_string(std::string name)
+	{
+		return [=](T& self) -> std::string
+		{
+			std::stringstream ss;
+			ss << name << "*: " << std::hex << &self;
+			return ss.str();
+		};
 	}
 
 } // end namespace Rml::SolLua

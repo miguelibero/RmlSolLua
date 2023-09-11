@@ -64,6 +64,7 @@ namespace Rml::SolLua
 	{
 
 		lua.new_usertype<Rml::ElementForm>("ElementForm", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<ElementForm>("sol.ElementForm"),
 			// M
 			"Submit", sol::overload(&submit::submit, &submit::submitName, &submit::submitNameValue),
 
@@ -74,6 +75,7 @@ namespace Rml::SolLua
 		///////////////////////////
 
 		lua.new_usertype<Rml::ElementFormControl>("ElementFormControl", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<ElementFormControl>("sol.ElementFormControl"),
 			// G+S
 			"disabled", sol::property(&Rml::ElementFormControl::IsDisabled, &Rml::ElementFormControl::SetDisabled),
 			"name", sol::property(&Rml::ElementFormControl::GetName, &Rml::ElementFormControl::SetName),
@@ -90,6 +92,7 @@ namespace Rml::SolLua
 		///////////////////////////
 
 		lua.new_usertype<Rml::ElementFormControlInput>("ElementFormControlInput", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<ElementFormControlInput>("sol.ElementFormControlInput"),
 			// G+S
 			"checked", sol::property(HASATTRGETTER(Rml::ElementFormControlInput, "checked"), SETATTR(Rml::ElementFormControlInput, "checked", bool)),
 			"maxlength", sol::property(GETATTRGETTER(Rml::ElementFormControlInput, "maxlength", -1), SETATTR(Rml::ElementFormControlInput, "maxlength", int)),
@@ -105,6 +108,7 @@ namespace Rml::SolLua
 		///////////////////////////
 
 		lua.new_usertype<Rml::ElementFormControlSelect>("ElementFormControlSelect", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<ElementFormControlSelect>("sol.ElementFormControlSelect"),
 			// M
 			"Add", sol::overload(
 				[](Rml::ElementFormControlSelect& self, Rml::ElementPtr& element, sol::optional<int> before)
@@ -161,6 +165,7 @@ namespace Rml::SolLua
 		///////////////////////////
 
 		lua.new_usertype<Rml::ElementFormControlDataSelect>("ElementFormControlDataSelect", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<ElementFormControlDataSelect>("sol.ElementFormControlDataSelect"),
 			// M
 			"SetDataSource", &Rml::ElementFormControlDataSelect::SetDataSource,
 
@@ -171,6 +176,7 @@ namespace Rml::SolLua
 		///////////////////////////
 
 		lua.new_usertype<Rml::ElementFormControlTextArea>("ElementFormControlTextArea", sol::no_constructor,
+			sol::meta_function::to_string, pointer_to_string<ElementFormControlTextArea>("sol.ElementFormControlTextArea"),
 			// G+S
 			"cols", sol::property(&Rml::ElementFormControlTextArea::GetNumColumns, &Rml::ElementFormControlTextArea::SetNumColumns),
 			"maxlength", sol::property(&Rml::ElementFormControlTextArea::GetMaxLength, &Rml::ElementFormControlTextArea::SetMaxLength),

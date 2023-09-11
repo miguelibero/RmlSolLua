@@ -138,6 +138,7 @@ namespace Rml::SolLua
 	void bind_context(sol::state_view& lua)
 	{
 		auto usertype = lua.new_usertype<Rml::Context>("Context", sol::no_constructor);
+		usertype[sol::meta_function::to_string] = pointer_to_string<Rml::Context>("sol.Context");
 		// M
 		usertype["AddEventListener"] = &Rml::Context::AddEventListener;
 		usertype["CreateDocument"] = [](Rml::Context& self) { return self.CreateDocument(); };
