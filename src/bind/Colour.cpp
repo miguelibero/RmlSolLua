@@ -23,6 +23,14 @@ namespace Rml::SolLua
 	{
 		lua.new_usertype<Rml::Colourb>("Colourb", sol::constructors<Rml::Colourb(), Rml::Colourb(Rml::byte, Rml::byte, Rml::byte), Rml::Colourb(Rml::byte, Rml::byte, Rml::byte, Rml::byte)>(),
 			// O
+			sol::meta_function::to_string, [](Rml::Colourb& self) -> std::string
+			{
+				return std::string("sol.Colourb(")
+					+ std::to_string(self.red) + ", "
+					+ std::to_string(self.green) + ", "
+					+ std::to_string(self.blue) + ", "
+					+ std::to_string(self.alpha) + ")";
+			},
 			sol::meta_function::addition, &Rml::Colourb::operator+,
 			sol::meta_function::subtraction, &Rml::Colourb::operator-,
 			sol::meta_function::multiplication, &Rml::Colourb::operator*,
@@ -39,6 +47,14 @@ namespace Rml::SolLua
 
 		lua.new_usertype<Rml::Colourf>("Colourf", sol::constructors<Rml::Colourf(), Rml::Colourf(float, float, float), Rml::Colourf(float, float, float, float)>(),
 			// O
+			sol::meta_function::to_string, [](Rml::Colourf& self) -> std::string
+			{
+				return std::string("sol.Colourf(")
+					+ std::to_string(self.red) + ", "
+					+ std::to_string(self.green) + ", "
+					+ std::to_string(self.blue) + ", "
+					+ std::to_string(self.alpha) + ")";
+			},
 			sol::meta_function::addition, &Rml::Colourf::operator+,
 			sol::meta_function::subtraction, &Rml::Colourf::operator-,
 			sol::meta_function::multiplication, &Rml::Colourf::operator*,

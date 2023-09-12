@@ -8,6 +8,10 @@ namespace Rml::SolLua
 	{
 		lua.new_usertype<Rml::Vector2i>("Vector2i", sol::constructors<Rml::Vector2i(), Rml::Vector2i(int, int)>(),
 			// O
+			sol::meta_function::to_string, [](Rml::Vector2i& self) -> std::string
+			{
+				return std::string("sol.Vector2i(") + std::to_string(self.x) + ", " + std::to_string(self.y) + ")";
+			},
 			sol::meta_function::addition, &Rml::Vector2i::operator+,
 			sol::meta_function::subtraction, sol::resolve<Rml::Vector2i(Vector2i) const>(&Rml::Vector2i::operator-),
 			sol::meta_function::multiplication, sol::overload(
@@ -30,6 +34,10 @@ namespace Rml::SolLua
 
 		lua.new_usertype<Rml::Vector2f>("Vector2f", sol::constructors<Rml::Vector2f(), Rml::Vector2f(float, float)>(),
 			// O
+			sol::meta_function::to_string, [](Rml::Vector2f& self) -> std::string
+			{
+				return std::string("sol.Vector2f(") + std::to_string(self.x) + ", " + std::to_string(self.y) + ")";
+			},
 			sol::meta_function::addition, &Rml::Vector2f::operator+,
 			sol::meta_function::subtraction, sol::resolve<Rml::Vector2f(Vector2f) const>(&Rml::Vector2f::operator-),
 			sol::meta_function::multiplication, sol::overload(
