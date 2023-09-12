@@ -105,6 +105,7 @@ namespace Rml::SolLua
 			//--
 			"url", sol::readonly_property(&SolLuaDocument::GetSourceURL),
 			"modal", sol::readonly_property(&SolLuaDocument::IsModal),
+			"environment", sol::readonly_property(&SolLuaDocument::GetLuaEnvironment),
 
 			// B
 			sol::base_classes, sol::bases<Rml::Element>()
