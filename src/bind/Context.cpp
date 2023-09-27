@@ -173,9 +173,9 @@ namespace Rml::SolLua
 		usertype["ActivateTheme"] = &Rml::Context::ActivateTheme;
 		usertype["IsThemeActive"] = &Rml::Context::IsThemeActive;
 		usertype["GetElementAtPoint"] = sol::overload(&element::getElementAtPoint1, &element::getElementAtPoint2);
-		usertype["PullDocumentToFront"] = &Rml::Context::PullDocumentToFront;
-		usertype["PushDocumentToBack"] = &Rml::Context::PushDocumentToBack;
-		usertype["UnfocusDocument"] = &Rml::Context::UnfocusDocument;
+		usertype["PullDocumentToFront"] = [](Rml::Context& self, SolLuaDocument* document) { self.PullDocumentToFront(document); };
+		usertype["PushDocumentToBack"] = [](Rml::Context& self, SolLuaDocument* document) { self.PushDocumentToBack(document); };
+		usertype["UnfocusDocument"] = [](Rml::Context& self, SolLuaDocument* document) { self.UnfocusDocument(document); };
 		// RemoveEventListener
 
 		// G+S
