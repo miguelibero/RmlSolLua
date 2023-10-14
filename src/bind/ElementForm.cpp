@@ -93,6 +93,23 @@ namespace Rml::SolLua
 
 		lua.new_usertype<Rml::ElementFormControlInput>("ElementFormControlInput", sol::no_constructor,
 			sol::meta_function::to_string, pointer_to_string<ElementFormControlInput>("sol.ElementFormControlInput"),
+
+			// M
+#if RmlUi_VERSION_MAJOR >= 5 && RmlUi_VERSION_MINOR >= 1
+			"GetSelection", [](const Rml::ElementFormControlInput& self) -> auto
+			{
+				int start, end;
+				String text;
+				self.GetSelection(&start, &end, &text);
+				return to_lua_index(start), to_lua_index(end), text;
+			},
+			"Select", &Rml::ElementFormControlInput::Select,
+			"SetSelection", [](Rml::ElementFormControlInput& self, int start, int end)
+			{
+				self.SetSelectionRange(from_lua_index(start), from_lua_index(end));
+			},
+#endif
+
 			// G+S
 			"checked", sol::property(HASATTRGETTER(Rml::ElementFormControlInput, "checked"), SETATTR(Rml::ElementFormControlInput, "checked", bool)),
 			"maxlength", sol::property(GETATTRGETTER(Rml::ElementFormControlInput, "maxlength", -1), SETATTR(Rml::ElementFormControlInput, "maxlength", int)),
