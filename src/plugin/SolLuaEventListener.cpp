@@ -91,8 +91,11 @@ namespace Rml::SolLua
 
 	void SolLuaEventListener::ProcessEvent(Rml::Event& event)
 	{
+		if (!m_func.valid())
+			return;
+
 		auto document = dynamic_cast<SolLuaDocument*>(m_element->GetOwnerDocument());
-		if (document != nullptr && m_func.valid())
+		if (document != nullptr)
 		{
 			auto& env = document->GetLuaEnvironment();
 			const auto& ident = document->GetLuaEnvironmentIdentifier();
@@ -103,12 +106,12 @@ namespace Rml::SolLua
 			// If we have an identifier, set it now.
 			if (!ident.empty())
 				env.set(ident, document->GetId());
-
-			// Call the event!
-			auto result = m_func.call(event, m_element, document);
-			if (!result.valid())
-				ErrorHandler(m_func.lua_state(), std::move(result));
 		}
+
+		// Call the event!
+		auto result = m_func.call(event, m_element, document);
+		if (!result.valid())
+			ErrorHandler(m_func.lua_state(), std::move(result));
 	}
 
 } // namespace Rml::SolLua
