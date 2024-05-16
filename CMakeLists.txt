@@ -48,14 +48,13 @@ target_sources (RmlSolLua
 		"src/plugin/SolLuaPlugin.cpp"
 		"src/plugin/SolLuaPlugin.h"
 	PUBLIC
-		"include/RmlSolLua/RmlSolLua.h"
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/RmlSolLua/RmlSolLua.h>
 )
 
 target_include_directories (RmlSolLua
 	PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 	PUBLIC
-    $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
