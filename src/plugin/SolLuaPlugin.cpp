@@ -19,6 +19,11 @@ namespace Rml::SolLua
 	{
 	}
 
+	SolLuaPlugin::~SolLuaPlugin()
+	{
+		// intentionally left blank to allow the forward delcarations of unique_ptr
+	}
+
 	int SolLuaPlugin::GetEventClasses()
 	{
 		return EVT_BASIC;
