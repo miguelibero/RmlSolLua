@@ -19,44 +19,44 @@ target_compile_definitions (RmlSolLua
 		RmlUi_VERSION_MINOR=${RmlUi_VERSION_MINOR}
 )
 
+set(BUILD_SRC_DIR $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
+set(BUILD_INCLUDE_DIR $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+
 target_sources (RmlSolLua
 	PRIVATE
-		"include/RmlSolLua/RmlSolLua.h"
-		"src/RmlSolLua.cpp"
-		"src/bind/bind.cpp"
-		"src/bind/bind.h"
-		"src/bind/Colour.cpp"
-		"src/bind/Context.cpp"
-		"src/bind/Convert.cpp"
-		"src/bind/DataModel.cpp"
-		"src/bind/Document.cpp"
-		"src/bind/Element.cpp"
-		"src/bind/ElementDerived.cpp"
-		"src/bind/ElementForm.cpp"
-		"src/bind/Event.cpp"
-		"src/bind/Global.cpp"
-		"src/bind/Log.cpp"
-		"src/bind/Vector.cpp"
-		"src/plugin/SolLuaDataModel.cpp"
-		"src/plugin/SolLuaDataModel.h"
-		"src/plugin/SolLuaDocument.cpp"
-		"src/plugin/SolLuaDocument.h"
-		"src/plugin/SolLuaEventListener.cpp"
-		"src/plugin/SolLuaEventListener.h"
-		"src/plugin/SolLuaInstancer.cpp"
-		"src/plugin/SolLuaInstancer.h"
-		"src/plugin/SolLuaPlugin.cpp"
-		"src/plugin/SolLuaPlugin.h"
+	    "${BUILD_INCLUDE_DIR}/RmlSolLua/RmlSolLua.h"
+		"${BUILD_SRC_DIR}/RmlSolLua.cpp"
+		"${BUILD_SRC_DIR}/bind/bind.cpp"
+		"${BUILD_SRC_DIR}/bind/bind.h"
+		"${BUILD_SRC_DIR}/bind/Colour.cpp"
+		"${BUILD_SRC_DIR}/bind/Context.cpp"
+		"${BUILD_SRC_DIR}/bind/Convert.cpp"
+		"${BUILD_SRC_DIR}/bind/DataModel.cpp"
+		"${BUILD_SRC_DIR}/bind/Document.cpp"
+		"${BUILD_SRC_DIR}/bind/Element.cpp"
+		"${BUILD_SRC_DIR}/bind/ElementDerived.cpp"
+		"${BUILD_SRC_DIR}/bind/ElementForm.cpp"
+		"${BUILD_SRC_DIR}/bind/Event.cpp"
+		"${BUILD_SRC_DIR}/bind/Global.cpp"
+		"${BUILD_SRC_DIR}/bind/Log.cpp"
+		"${BUILD_SRC_DIR}/bind/Vector.cpp"
+		"${BUILD_SRC_DIR}/plugin/SolLuaDataModel.cpp"
+		"${BUILD_SRC_DIR}/plugin/SolLuaDataModel.h"
+		"${BUILD_SRC_DIR}/plugin/SolLuaDocument.cpp"
+		"${BUILD_SRC_DIR}/plugin/SolLuaDocument.h"
+		"${BUILD_SRC_DIR}/plugin/SolLuaEventListener.cpp"
+		"${BUILD_SRC_DIR}/plugin/SolLuaEventListener.h"
+		"${BUILD_SRC_DIR}/plugin/SolLuaInstancer.cpp"
+		"${BUILD_SRC_DIR}/plugin/SolLuaInstancer.h"
+		"${BUILD_SRC_DIR}/plugin/SolLuaPlugin.cpp"
+		"${BUILD_SRC_DIR}/plugin/SolLuaPlugin.h"
 	PUBLIC
-		"include/RmlSolLua/RmlSolLua.h"
+		"${BUILD_INCLUDE_DIR}/RmlSolLua/RmlSolLua.h"
 )
 
 target_include_directories (RmlSolLua
-	PRIVATE
-		${PROJECT_SOURCE_DIR}/src
-
-	PUBLIC
-		${PROJECT_SOURCE_DIR}/include
+	PRIVATE ${BUILD_SRC_DIR}		
+	PUBLIC ${BUILD_INCLUDE_DIR}		
 )
 
 target_link_libraries (RmlSolLua RmlCore)
